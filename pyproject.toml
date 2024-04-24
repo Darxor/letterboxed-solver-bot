@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "letterboxed-telegram"
+version = "0.1.0"
+description = ""
+authors = ["Alexander Sevostianov <sevostianov@ecopsy.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+opencv-python = "^4.9.0.80"
+numpy = "^1.26.4"
+python-dotenv = "^1.0.1"
+aiogram = "^3.5.0"
+pytesseract = "^0.3.10"
+imutils = "^0.5.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

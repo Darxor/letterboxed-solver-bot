@@ -1,5 +1,4 @@
 import numpy as np
-from skimage import color
 
 
 def resize_box(box: tuple | list, scale: float) -> tuple[float, float, float, float]:
@@ -15,17 +14,6 @@ def resize_box(box: tuple | list, scale: float) -> tuple[float, float, float, fl
 
     return new_x, new_y, new_w, new_h
 
-
-def img2gray(image: np.ndarray) -> np.ndarray:
-    match image.shape[2]:
-        case 1:
-            image = image
-        case 3:
-            image = color.rgb2gray(image)
-        case 4:
-            image = color.rgb2gray(color.rgba2rgb(image))
-
-    return image
 
 def array2image(image: np.ndarray) -> np.ndarray:
     return (image * 255).astype(np.uint8)

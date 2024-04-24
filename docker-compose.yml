@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  letterboxed-bot:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8800:8800"

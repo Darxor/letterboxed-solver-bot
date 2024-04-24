@@ -3,11 +3,13 @@ import logging
 import random
 
 from aiogram import Bot, F, Router, types
+from aiogram.utils.chat_action import ChatActionMiddleware
 
 from ocr import process_image
 from solver import solve
 
 main_router = Router()
+main_router.message.middleware(ChatActionMiddleware())
 
 
 @main_router.message(F.photo)
@@ -23,7 +25,10 @@ async def handle_docs_photo(message: types.Message, bot: Bot) -> None:
         return
 
     reply_text = (
-        f"Буквы твоего letterboxed: <pre>{ocr_text}</pre>\n\n приступаю к решению..."
+        (f"Буквы твоего letterboxed: <pre>{ocr_text}</pre>\n\n"
+         "Если буквы не соответствуют действительности, попробуй снять скриншот ещё раз, "
+         "чтобы игровое поле занимало больше пространства.\n\n"
+         "Приступаю к решению...")
         if ocr_text
         else "Буквы не найдены :(\n\nПопробуй снять скриншот иначе"
     )

@@ -115,32 +115,29 @@ class LetterBoxed:
 def puzzle_from_string(input_string: str) -> str:
     """
     Parse puzzle from string of format
-    C M U
-    Z O
-    H S
-    B I
-    R A N
+    CMU
+    ZOH
+    SBI
+    RAN
     """
-
-    letters = [lettr.lower() for lettr in input_string.strip().split()]
+    input_string = input_string.replace("\n", "-").lower().strip()
     
-    if len(letters) < 12:
+    if len(input_string) - 3 < 12:
         raise ValueError("not enough letters for correct puzzle")
-    
-    letters_out = "-".join([
-        letters[0] + letters[1] + letters[2],
-        letters[3] + letters[5] + letters[7],
-        letters[4] + letters[6] + letters[8],
-        letters[9] + letters[10] + letters[11],
-    ])
 
-    return letters_out
+    return input_string
 
 
-def solve(puzzle: str, len_threshold: int = 3) -> tuple[int, List[List[str]]]:
+def solve(puzzle: str, accepted_len: tuple[int, int] = (3, 6)) -> tuple[int, int, List[List[str]]]:
     puzzle = puzzle_from_string(puzzle)
-    puzzle = LetterBoxed(puzzle, "solver/words.txt", len_threshold)
-    meta_solutions = puzzle.find_all_solutions()
+    puzzle = LetterBoxed(puzzle, "solver/words.txt", accepted_len[0])
+    
+    meta_solutions = []
+    len_threshold = accepted_len[0] - 1
+    while not len(meta_solutions) and len_threshold < accepted_len[1]:
+        len_threshold += 1
+        puzzle.len_threshold = len_threshold
+        meta_solutions = puzzle.find_all_solutions()
 
     full_count = 0
     for meta_solution in meta_solutions:
@@ -149,4 +146,4 @@ def solve(puzzle: str, len_threshold: int = 3) -> tuple[int, List[List[str]]]:
             count *= len(element)
         full_count += count
 
-    return full_count, meta_solutions
+    return len_threshold, full_count, meta_solutions

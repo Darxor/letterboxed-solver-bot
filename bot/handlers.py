@@ -25,35 +25,40 @@ async def handle_docs_photo(message: types.Message, bot: Bot) -> None:
         return
 
     reply_text = (
-        (f"Буквы твоего letterboxed: <pre>{ocr_text}</pre>\n\n"
-         "Если буквы не соответствуют действительности, попробуй снять скриншот ещё раз, "
-         "чтобы игровое поле занимало больше пространства.\n\n"
-         "Приступаю к решению...")
+        (
+            f"Буквы твоего letterboxed по часовой стрелке: <pre>{ocr_text}</pre>\n\n"
+            "Если буквы не соответствуют действительности, попробуй снять скриншот ещё раз, "
+            "чтобы игровое поле занимало больше пространства.\n\n"
+            "Приступаю к решению..."
+        )
         if ocr_text
         else "Буквы не найдены :(\n\nПопробуй снять скриншот иначе"
     )
 
-    await message.reply_photo(
-        types.BufferedInputFile(ocr_image.read(), "image_ocr.png"),
-        caption=reply_text,
-        parse_mode="HTML",
-    )
-    
+    if ocr_image.getbuffer().nbytes:
+        await message.reply_photo(
+            types.BufferedInputFile(ocr_image.read(), "image_ocr.png"),
+            caption=reply_text,
+            parse_mode="HTML",
+        )
+    else:
+        await message.reply(reply_text, parse_mode="HTML")
+
     if not ocr_text:
         return
 
     try:
-        n_solutions, solutions = solve(ocr_text)
+        solutions_nword, solutions_n, solutions = solve(ocr_text, (3, 6))
     except Exception as e:
         logging.exception(e)
         await message.reply(f"Во время решения произошла ошибка: {e}")
         return
 
-    if not n_solutions:
+    if not solutions_n:
         await message.reply("Решение не найдено :(")
         return
 
-    solution_text = "Решения за три слова:"
+    solution_text = f"Решения за {solutions_nword} слова:"
 
     random.seed(42)
     random.shuffle(solutions)

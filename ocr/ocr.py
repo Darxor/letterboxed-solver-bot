@@ -48,7 +48,18 @@ def crop_image(
 
 
 def find_template(image: np.ndarray, template: np.ndarray) -> np.ndarray:
-    scales = np.linspace(0.25, 2, 20)
+    min_scale = 0.2
+    max_scale = 2
+    num_levels = 10
+    
+    # find safe range of scales:
+    # 1. template should not be larger than image
+    # 2. template should not be smaller than 10% of the image,
+    #    as we probably would not be able to detect letters at this scale anyway
+    image_template_ratio = min(image.shape[0] / template.shape[0], image.shape[1] / template.shape[1])
+    min_scale = max(min_scale, 0.1 * image_template_ratio)
+    max_scale = min(max_scale, image_template_ratio)
+    scales = np.logspace(np.log10(min_scale), np.log10(max_scale), num=num_levels)
 
     max_corr = 0
     best_location = (0, 0)

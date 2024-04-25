@@ -8,11 +8,11 @@ from skimage import io as skio
 from .utils import array2image, resize_box
 
 TEMPLATE_PATH = "templates/template3.png"
-
+TEMPLATE = skio.imread(TEMPLATE_PATH, as_gray=True, plugin="imageio")
 
 async def process_image(image: io.BytesIO):
     img = skio.imread(image, as_gray=True, plugin="imageio")
-    template = skio.imread(TEMPLATE_PATH, as_gray=True, plugin="imageio")
+    template = TEMPLATE
 
     template_loc, template_dim = find_template(img, template)
     img_cropped = crop_image(img, template_loc, template_dim, 1.5)

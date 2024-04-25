@@ -106,7 +106,7 @@ def extract_image_regions(
 
     label_image = measure.label(cleaned)
 
-    regions = [ImageRegion(region.bbox) for region in measure.regionprops(label_image)]
+    regions = [ImageRegion(region.bbox, square_bbox=True) for region in measure.regionprops(label_image)]
 
     max_area = max(r.area for r in regions)
     min_area = min(r.area for r in regions)
@@ -131,7 +131,6 @@ def extract_image_regions(
     cleaned = np.invert(cleaned)
     for region in letter_regions:
         region.rescale_bbox(1.15)
-        region.square_bbox()
         region.crop_from_image(cleaned)
 
     return cleaned, big_regions, letter_regions
